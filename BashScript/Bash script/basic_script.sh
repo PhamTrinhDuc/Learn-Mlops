@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# https://devhints.io/bash 
+# https://devhints.io/bash => search
 
 
 # Declare a variable first_arg to be your input argument
@@ -41,7 +41,6 @@ echo "All the .sh files in the current directory:"
 for i in ./*.sh; do
     echo $i
 done
-
 # Positive and negative number
 if (( first_arg > 0 )); then
     echo "Positive number"

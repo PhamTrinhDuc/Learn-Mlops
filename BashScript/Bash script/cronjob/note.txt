@@ -1,0 +1,4 @@
+crontab -e:     Mở file để tạo cron mới
+crontab -l:     Xem danh sách cron đã tạo
+
+* * * * * cd /home/ducpham/MLops/BashScript/Bash script/cronjob && /bin/bash run.sh >> logs/iris.log 2>&1
