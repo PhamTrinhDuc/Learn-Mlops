@@ -1,0 +1,14 @@
+## Thành phần chính trong Kubernetes:
+1. Pod – đơn vị nhỏ nhất, chứa 1 hoặc nhiều container.
+2. Node – máy chủ thật hoặc ảo chạy Pod.
+3. Cluster – tập hợp nhiều Node.
+4. Deployment – định nghĩa cách ứng dụng được cập nhật, scale.
+5. Service – kết nối và load balancing giữa các Pod.
+6. ConfigMap & Secret – quản lý cấu hình, thông tin nhạy cảm.
+7. Ingress – quản lý routing HTTP/HTTPS từ bên ngoài vào service nội bộ.
+
+## Kubernetes giải quyết vấn đề gì?
+✅ Tự động scale ứng dụng khi có nhiều người dùng.
+✅ Tự phục hồi khi có lỗi (Pod chết sẽ tự khởi động lại).
+✅ Cập nhật ứng dụng không downtime (rolling update).
+✅ Tách biệt hệ thống (microservices) dễ quản lý.
