@@ -11,29 +11,55 @@ Xác định phiên bản của cú pháp Docker Compose (ví dụ: 3.8, 3.9). N
 - Mỗi service đại diện cho một container. Các thuộc tính phổ biến:
   - image: Tên image Docker (từ Docker Hub hoặc tự build).
   - build: Nếu muốn build image từ Dockerfile, chỉ định đường dẫn
-  '''bash
+  ```bash
   build:
-  context: .
-  dockerfile: Dockerfile
-  '''
+    context: .
+    dockerfile: Dockerfile
+  ```
   - container_name: Tên tùy chỉnh cho container.
   - ports: Ánh xạ cổng giữa host và container.
-  '''bash
+  ```bash
   ports:
-  - "8080:80" # host:container
-  '''
+    "8080:80" # host:container
+  ```
   - environment: Biến môi trường cho container
-  '''bash
+  ```bash
   environment:
-  - DB_HOST=database
-  - API_KEY=xyz123
-  '''
+    DB_HOST=database
+    API_KEY=xyz123
+  ```
   Hoặc
-  '''bash
+  ```bash
   environment:
-  DB_HOST: database
-  API_KEY: xyz123
-  '''
+    DB_HOST: database
+    API_KEY: xyz123
+  ```
+  - env_file: Nạp biến môi trường từ tệp:
+  ```bash
+  env_file:
+    .env
+  ```
+  - volumes: Ánh xạ thư mục hoặc volume để lưu trữ dữ liệu.
+  ```bash
+  volumes:
+    ./data:/app/data
+    my_volume:/var/lib/mysql
+  ```
+  - depends_on: Chỉ định thứ tự khởi động (container nào cần chạy trước)
+  ```bash
+  depends_on:
+    database
+  ```
+  - restart: Chính sách khởi động lại (no, always, on-failure, unless-stopped).
+  ```bash
+  restart: always
+  ```
+  - networks: Chỉ định mạng mà container sử dụng.
+  ```bash
+  networks:
+    my_network
+  ```
+
 #### 3. Networks (optional): 
 Cấu hình các mạng tùy chỉnh để các container giao tiếp với nhau.
 #### 4. Volumns (optional): 
@@ -42,7 +68,7 @@ Cấu hình các mạng tùy chỉnh để các container giao tiếp với nhau
 Quản lý cấu hình hoặc thông tin nhạy cảm.
 
 #### 6. Cú pháp cơ bản: 
-'''bash
+```bash
 version: "3.8"
 services:
   <service_name>:
@@ -63,4 +89,4 @@ networks:
     driver: bridge
 volumes:
   <volume_name>:
-'''
+```
