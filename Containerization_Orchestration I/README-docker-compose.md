@@ -3,6 +3,28 @@
 Docker Compose là một công cụ để định nghĩa và chạy các ứng dụng Docker đa container bằng cách sử dụng tệp cấu hình YAML. Tệp docker-compose.yml được sử dụng để mô tả các service, network, volume và các cấu hình khác
 ## Cấu trúc cơ bản của tệp docker-compose.yml:
 Tệp Docker Compose sử dụng cú pháp YAML và thường bao gồm các phần chính sau
+```bash
+version: "3.8"
+services:
+  <service_name>:
+    image: <image_name>
+    container_name: <container_name>
+    ports:
+      - "<host_port>:<container_port>"
+    environment:
+      - <KEY>=<VALUE>
+    volumes:
+      - <host_path>:<container_path>
+    depends_on:
+      - <other_service>
+    networks:
+      - <network_name>
+networks:
+  <network_name>:
+    driver: bridge
+volumes:
+  <volume_name>:
+```
 #### 1. Version: 
 Xác định phiên bản của cú pháp Docker Compose (ví dụ: 3.8, 3.9). Nên chọn phiên bản phù hợp với phiên bản Docker bạn đang sử dụng.
 #### 2. Services: 
@@ -61,32 +83,117 @@ Xác định phiên bản của cú pháp Docker Compose (ví dụ: 3.8, 3.9). N
   ```
 
 #### 3. Networks (optional): 
-Cấu hình các mạng tùy chỉnh để các container giao tiếp với nhau.
+- Định nghĩa các mạng tùy chỉnh để cách ly hoặc kết nối các container.
+- Driver phổ biến: bridge (mặc định), host, overlay.
+```bash
+networks:
+  my_network:
+    driver: bridge
+```
 #### 4. Volumns (optional): 
-Định nghĩa các volume để lưu trữ dữ liệu bền vững.
+- Định nghĩa volume để lưu trữ dữ liệu bền vững.
+- Có thể là volume được quản lý bởi Docker hoặc ánh xạ thư mục.
+```bash
+volumes:
+  my_volume:
+```
 #### 5. Config/Secrets (optional): 
 Quản lý cấu hình hoặc thông tin nhạy cảm.
 
-#### 6. Cú pháp cơ bản: 
+#### 6. Ví dụ cụ thể
 ```bash
 version: "3.8"
+
 services:
-  <service_name>:
-    image: <image_name>
-    container_name: <container_name>
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: web_app
     ports:
-      - "<host_port>:<container_port>"
+      - "3000:3000"
     environment:
-      - <KEY>=<VALUE>
-    volumes:
-      - <host_path>:<container_path>
+      - NODE_ENV=production
+      - DB_HOST=database
+      - REDIS_HOST=redis
     depends_on:
-      - <other_service>
+      - database
+      - redis
+    volumes:
+      - ./src:/app/src
     networks:
-      - <network_name>
+      - app_network
+    restart: always
+
+  database:
+    image: mysql:8.0
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: myapp
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - app_network
+    restart: unless-stopped
+
+  redis:
+    image: redis:7.0
+    container_name: redis_cache
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - app_network
+    restart: unless-stopped
+
 networks:
-  <network_name>:
+  app_network:
     driver: bridge
+
 volumes:
-  <volume_name>:
+  db_data:
+  redis_data:
+```
+
+- web:
+  - Build từ Dockerfile trong thư mục hiện tại.
+  - Ánh xạ cổng 3000 (host) sang 3000 (container).
+  - Sử dụng biến môi trường để kết nối với database và redis.
+  - Ánh xạ thư mục ./src vào /app/src để phát triển.
+- database:
+  - Sử dụng image mysql:8.0.
+  - Cấu hình biến môi trường cho MySQL (user, password, database).
+  - Lưu dữ liệu vào volume db_data.
+- redis:
+  - Sử dụng image redis:7.0.
+  - Lưu trữ dữ liệu cache vào volume redis_data.
+- networks:
+  - Tất cả container kết nối qua mạng app_network để giao tiếp (ví dụ: web truy cập database qua tên database).
+- volumes:
+  - Tạo hai volume để lưu trữ dữ liệu của MySQL và Redis.
+
+## Các câu lệnh tương tác với file docker-compose.yml
+#### 1. Khởi động container: 
+```bash
+docker-compose up -d # -d: Chạy ở chế độ nền
+```
+#### 2. Kiểm tra trạng thái: 
+```bash
+docker-compose ps
+```
+#### 3. Xem log: 
+```bash
+docker-compose logs
+```
+#### 4. Dừng và xóa container: 
+```bash
+docker-compose down
+```
+#### 5. Build lại nếu có thay đổi: 
+```bash
+docker-compose up --build
 ```
