@@ -31,20 +31,20 @@ Xác định phiên bản của cú pháp Docker Compose (ví dụ: 3.8, 3.9). N
 - Định nghĩa các container (dịch vụ) sẽ chạy, bao gồm image, port, environment, volume, v.v.
 
 - Mỗi service đại diện cho một container. Các thuộc tính phổ biến:
-  - image: Tên image Docker (từ Docker Hub hoặc tự build).
-  - build: Nếu muốn build image từ Dockerfile, chỉ định đường dẫn
+  - **image**: Tên image Docker (từ Docker Hub hoặc tự build).
+  - **build**: Nếu muốn build image từ Dockerfile, chỉ định đường dẫn
   ```bash
   build:
     context: .
     dockerfile: Dockerfile
   ```
-  - container_name: Tên tùy chỉnh cho container.
-  - ports: Ánh xạ cổng giữa host và container.
+  - **container_name**: Tên tùy chỉnh cho container.
+  - **ports**: Ánh xạ cổng giữa host và container.
   ```bash
   ports:
     "8080:80" # host:container
   ```
-  - environment: Biến môi trường cho container
+  - **environment**: Biến môi trường cho container
   ```bash
   environment:
     DB_HOST=database
@@ -56,27 +56,27 @@ Xác định phiên bản của cú pháp Docker Compose (ví dụ: 3.8, 3.9). N
     DB_HOST: database
     API_KEY: xyz123
   ```
-  - env_file: Nạp biến môi trường từ tệp:
+  - **env_file**: Nạp biến môi trường từ tệp:
   ```bash
   env_file:
     .env
   ```
-  - volumes: Ánh xạ thư mục hoặc volume để lưu trữ dữ liệu.
+  - **volumes**: Ánh xạ thư mục hoặc volume để lưu trữ dữ liệu.
   ```bash
   volumes:
     ./data:/app/data
     my_volume:/var/lib/mysql
   ```
-  - depends_on: Chỉ định thứ tự khởi động (container nào cần chạy trước)
+  - **depends_on**: Chỉ định thứ tự khởi động (container nào cần chạy trước)
   ```bash
   depends_on:
     database
   ```
-  - restart: Chính sách khởi động lại (no, always, on-failure, unless-stopped).
+  - **restart**: Chính sách khởi động lại (no, always, on-failure, unless-stopped).
   ```bash
   restart: always
   ```
-  - networks: Chỉ định mạng mà container sử dụng.
+  - **networks**: Chỉ định mạng mà container sử dụng.
   ```bash
   networks:
     my_network
@@ -98,7 +98,7 @@ volumes:
   my_volume:
 ```
 #### 5. Config/Secrets (optional): 
-Quản lý cấu hình hoặc thông tin nhạy cảm.
+- Quản lý cấu hình hoặc thông tin nhạy cảm.
 
 #### 6. Ví dụ cụ thể
 ```bash
@@ -159,21 +159,21 @@ volumes:
   redis_data:
 ```
 
-- web:
+- **web**:
   - Build từ Dockerfile trong thư mục hiện tại.
   - Ánh xạ cổng 3000 (host) sang 3000 (container).
   - Sử dụng biến môi trường để kết nối với database và redis.
   - Ánh xạ thư mục ./src vào /app/src để phát triển.
-- database:
+- **database**:
   - Sử dụng image mysql:8.0.
   - Cấu hình biến môi trường cho MySQL (user, password, database).
   - Lưu dữ liệu vào volume db_data.
-- redis:
+- **redis**:
   - Sử dụng image redis:7.0.
   - Lưu trữ dữ liệu cache vào volume redis_data.
-- networks:
+- **networks**:
   - Tất cả container kết nối qua mạng app_network để giao tiếp (ví dụ: web truy cập database qua tên database).
-- volumes:
+- **volumes**:
   - Tạo hai volume để lưu trữ dữ liệu của MySQL và Redis.
 
 ## Các câu lệnh tương tác với file docker-compose.yml
