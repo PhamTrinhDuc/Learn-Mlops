@@ -80,9 +80,38 @@ spec:
       kubectl scale deployment my-app-deployment --replicas=5
       ```
     #### **2. Selector:**
+      + ý nghĩa: Xác định cách Deployment tìm và quản lý các Pod mà nó chịu trách nhiệm.
+      + Cấu trúc: 
+      ```bash
+      selector:
+        matchLabels:
+          app: my-app
+      ```
+        > matchLabels: Là một bộ lọc dựa trên nhãn (labels) để xác định Pod nào thuộc về Deployment này. Ở đây, Deployment sẽ quản lý tất cả các Pod có nhãn app: my-app.
+      + Cách hoạt động: 
+        > Deployment sử dụng selector để liên kết với các Pod được tạo ra từ template (xem phần tiếp theo).
+        > Nếu có Pod nào khác trong cluster có nhãn app: my-app nhưng không được tạo bởi Deployment này, chúng sẽ không được quản lý bởi Deployment.
+    #### **3. template:**
+      + Định nghĩa mẫu (blueprint) cho các Pod mà Deployment sẽ tạo ra. Mỗi khi cần tạo Pod mới (do mở rộng hoặc thay thế Pod bị lỗi), Kubernetes sẽ sử dụng mẫu này.
+      + Cấu trúc: 
+      ```bash
+      template:
+        metadata:
+          labels:
+            app: my-app
+        spec:
+          containers:
+          - name: my-container
+            image: my-app:1.0
+            ports:
+            - containerPort: 8080
+      ```
+      + template: chứa hai phần chính: 
+        + metadata: Định nghĩa thông tin mô tả cho Pod (như nhãn)
+        + spec: Định nghĩa cấu hình chi tiết của Pod (như container, cổng, biến env...)
+        
+## Các tài nguyên phổ biến
 
-### Các tài nguyên phổ biến
+## Các câu lệnh với kubernetes
 
-### Các câu lệnh với kubernetes
-
-### So sánh Docker-compose với Kubernetes
+## So sánh Docker-compose với Kubernetes
