@@ -377,3 +377,16 @@ kubectl exec -it <pod_name> -- /bin/bash
 kubectl exec -it <pod_name> -- /bin/sh
 ```
 ## 6. So sánh Docker-compose với Kubernetes
+### Điểm tương đồng:
+- Quản lý container: Cả hai đều dùng để định nghĩa và chạy các container (như ứng dụng web, database).
+-  Cấu hình declaratively: Sử dụng tệp YAML để mô tả các thành phần (services, volumes, networks trong Docker Compose; pods, services, deployments trong Kubernetes).
+- Tự động hóa: Cả hai hỗ trợ tự động hóa việc triển khai và quản lý container.
+### Điểm khác:
+| **Tiêu chí**     | **Docker Compose**                                           | **Kubernetes**                                                           |
+|------------------|--------------------------------------------------------------|---------------------------------------------------------------------------|
+| **Mục đích**      | Quản lý container trên một máy hoặc cụm nhỏ.                | Quản lý container trên cụm lớn, phân tán.                                |
+| **Quy mô**        | Phù hợp cho dev, test, hoặc dự án nhỏ.                      | Phù hợp cho sản phẩm lớn, cần scale, HA.                                 |
+| **Tính năng**     | Đơn giản, dễ dùng, ít tính năng phức tạp.                   | Hỗ trợ auto-scaling, self-healing, rolling updates.                      |
+| **Networking**    | Mạng đơn giản (bridge, host).                               | Mạng phức tạp, tích hợp service discovery, load balancing.              |
+| **Triển khai**    | Chạy cục bộ hoặc trên một server.                           | Chạy trên cụm (nhiều node), cần thiết lập cluster.                      |
+| **Công cụ**       | Chỉ cần Docker.                                              | Cần cụm Kubernetes (Minikube, EKS, GKE, AKS).                            |
