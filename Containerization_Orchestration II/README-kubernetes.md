@@ -71,50 +71,62 @@ spec:
         ports:
         - containerPort: 8080
   ```
-  #### **4.1. Replicas: 3**
-    + Ý nghĩa: Chỉ định số lượng bản sao (Pod) mà Deployment cần duy trì. Trong trường hợp này, Kubernetes sẽ đảm bảo luôn có 3 Pod đang chạy ứng dụng.
-    + Cách hoạt động: Nếu một Pod bị lỗi hoặc bị xóa, Kubernetes sẽ tự động tạo một Pod mới để duy trì số lượng replicas là 3.
-    + Ứng dụng: Điều này hỗ trợ tính sẵn sàng cao (high availability) và khả năng mở rộng (scalability). Bạn có thể dùng lệnh kubectl scale để thay đổi số lượng replicas:
-    ```bash
-    kubectl scale deployment my-app-deployment --replicas=5
-    ```
-  #### **4.2. Selector:**
-    + ý nghĩa: Xác định cách Deployment tìm và quản lý các Pod mà nó chịu trách nhiệm.
-    + Cấu trúc: 
-    ```bash
-    selector:
-      matchLabels:
-        app: my-app
-    ```
-    + matchLabels: Là một bộ lọc dựa trên nhãn (labels) để xác định Pod nào thuộc về Deployment này. Ở đây, Deployment sẽ quản lý tất cả các Pod có nhãn app: my-app.
-    + Cách hoạt động: 
-      > Deployment sử dụng selector để liên kết với các Pod được tạo ra từ template (xem phần tiếp theo).
-      > Nếu có Pod nào khác trong cluster có nhãn app: my-app nhưng không được tạo bởi Deployment này, chúng sẽ không được quản lý bởi Deployment.
-  #### **4.3. template:**
-    + Định nghĩa mẫu (blueprint) cho các Pod mà Deployment sẽ tạo ra. Mỗi khi cần tạo Pod mới (do mở rộng hoặc thay thế Pod bị lỗi), Kubernetes sẽ sử dụng mẫu này.
-    + Cấu trúc: 
-    ```bash
-    template:
+    #### **4.1. Replicas: 3**
+      - Ý nghĩa: Chỉ định số lượng bản sao (Pod) mà Deployment cần duy trì. Trong trường hợp này, Kubernetes sẽ đảm bảo luôn có 3 Pod đang chạy ứng dụng.
+      - Cách hoạt động: Nếu một Pod bị lỗi hoặc bị xóa, Kubernetes sẽ tự động tạo một Pod mới để duy trì số lượng replicas là 3.
+      - Ứng dụng: Điều này hỗ trợ tính sẵn sàng cao (high availability) và khả năng mở rộng (scalability). Bạn có thể dùng lệnh kubectl scale để thay đổi số lượng replicas:
+      ```bash
+      kubectl scale deployment my-app-deployment --replicas=5
+      ```
+    #### **4.2. Selector:**
+      - ý nghĩa: Xác định cách Deployment tìm và quản lý các Pod mà nó chịu trách nhiệm.
+      - Cấu trúc: 
+      ```bash
+      selector:
+        matchLabels:
+          app: my-app
+      ```
+      - matchLabels: Là một bộ lọc dựa trên nhãn (labels) để xác định Pod nào thuộc về Deployment này. Ở đây, Deployment sẽ quản lý tất cả các Pod có nhãn app: my-app.
+      - Cách hoạt động: 
+        > Deployment sử dụng selector để liên kết với các Pod được tạo ra từ template (xem phần tiếp theo).
+        > Nếu có Pod nào khác trong cluster có nhãn app: my-app nhưng không được tạo bởi Deployment này, chúng sẽ không được quản lý bởi Deployment.
+    #### **4.3. template:**
+      - Định nghĩa mẫu (blueprint) cho các Pod mà Deployment sẽ tạo ra. Mỗi khi cần tạo Pod mới (do mở rộng hoặc thay thế Pod bị lỗi), Kubernetes sẽ sử dụng mẫu này.
+      - Cấu trúc: 
+      ```bash
+      template:
+        metadata:
+          labels:
+            app: my-app
+        spec:
+          containers:
+          - name: my-container
+            image: my-app:1.0
+            ports:
+            - containerPort: 8080
+      ```
+      - **template.metadata**: Định nghĩa thông tin mô tả cho Pod (như nhãn)
+      - Cấu trúc: 
+      ```bash
       metadata:
         labels:
           app: my-app
+      ```
+        - labels: Gán nhãn app: my-app cho Pod. Nhãn này được sử dụng để: 
+          - Liên kết Pod với Deployment (qua selector.matchLabels).
+          - Cho phép các tài nguyên khác (như Service) tìm Pod thông qua nhãn.
+      - **template.spec**: Mô tả cấu hình chi tiết của Pod, bao gồm các container chạy trong Pod, cổng, tài nguyên, và các cấu hình khác.
+      - Cấu trúc: 
+      ```bash
       spec:
         containers:
         - name: my-container
           image: my-app:1.0
           ports:
           - containerPort: 8080
-    ```
-    + template: chứa hai phần chính: 
-      + metadata: Định nghĩa thông tin mô tả cho Pod (như nhãn)
-      + Cấu trúc: 
-      ```bash
-      metadata:
-        labels:
-          app: my-app
       ```
-      + labels: 
-      + spec: Định nghĩa cấu hình chi tiết của Pod (như container, cổng, biến env...)
+        - containers: Một danh sách các container chạy trong Pod. Mỗi Pod có thể chứa một hoặc nhiều container, nhưng trong trường hợp này chỉ có một container.
+    
 
 ## 4. Các tài nguyên phổ biến
 
