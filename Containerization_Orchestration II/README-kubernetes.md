@@ -71,6 +71,7 @@ spec:
         ports:
         - containerPort: 8080
   ```
+  - Chi tiết các thành phần trong spec:
     #### **4.1. Replicas: 3**
       - Ý nghĩa: Chỉ định số lượng bản sao (Pod) mà Deployment cần duy trì. Trong trường hợp này, Kubernetes sẽ đảm bảo luôn có 3 Pod đang chạy ứng dụng.
       - Cách hoạt động: Nếu một Pod bị lỗi hoặc bị xóa, Kubernetes sẽ tự động tạo một Pod mới để duy trì số lượng replicas là 3.
