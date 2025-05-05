@@ -13,7 +13,7 @@ Kubernetes (thường được gọi là K8s) là một nền tảng mã nguồn
 - **Volume**: Lưu trữ dữ liệu bền vững cho Pod, có thể là cục bộ hoặc từ các nhà cung cấp đám mây.
 
 ## Cấu trúc cơ bản của tệp biểu mẫu Kubernetes (YAML)
-- Tệp YAML được sử dụng để định nghĩa các tài nguyên Kubernetes (Pod, Deployment, Service, v.v.). Cấu trúc chung bao gồm:
+### Tệp YAML được sử dụng để định nghĩa các tài nguyên Kubernetes (Pod, Deployment, Service, v.v.). Cấu trúc chung bao gồm:
 ```bash
 apiVersion: <version>
 kind: <resource_type>
@@ -25,18 +25,18 @@ metadata:
 spec:
   <resource_specific_config>
 ```
-- Các thành phần chính trong tệp YAML:
+### Các thành phần chính trong tệp YAML:
   #### **1. apiVersion**: 
   - Chỉ định phiên bản API của Kubernetes được sử dụng.
   - Ví dụ: 
     - v1 cho Pod, Service.
     - apps/v1 cho Deployment.
     - networking.k8s.io/v1 cho Ingress.
-  
+
   #### **2. kind**: 
   - Loại tài nguyên (Pod, Deployment, Service, ConfigMap, Secret...)
   - Ví dụ: Deployment, Service, Pod.
-  
+
   #### **3. metadata**
   - Thông tin mô tả tài nguyên: 
     - name: tên duy nhất của tài nguyên
@@ -71,45 +71,51 @@ spec:
         ports:
         - containerPort: 8080
   ```
-  - Giải thích: 
-    #### **1. Replicas: 3**
-      + Ý nghĩa: Chỉ định số lượng bản sao (Pod) mà Deployment cần duy trì. Trong trường hợp này, Kubernetes sẽ đảm bảo luôn có 3 Pod đang chạy ứng dụng.
-      + Cách hoạt động: Nếu một Pod bị lỗi hoặc bị xóa, Kubernetes sẽ tự động tạo một Pod mới để duy trì số lượng replicas là 3.
-      + Ứng dụng: Điều này hỗ trợ tính sẵn sàng cao (high availability) và khả năng mở rộng (scalability). Bạn có thể dùng lệnh kubectl scale để thay đổi số lượng replicas:
-      ```bash
-      kubectl scale deployment my-app-deployment --replicas=5
-      ```
-    #### **2. Selector:**
-      + ý nghĩa: Xác định cách Deployment tìm và quản lý các Pod mà nó chịu trách nhiệm.
+  #### **1. Replicas: 3**
+    + Ý nghĩa: Chỉ định số lượng bản sao (Pod) mà Deployment cần duy trì. Trong trường hợp này, Kubernetes sẽ đảm bảo luôn có 3 Pod đang chạy ứng dụng.
+    + Cách hoạt động: Nếu một Pod bị lỗi hoặc bị xóa, Kubernetes sẽ tự động tạo một Pod mới để duy trì số lượng replicas là 3.
+    + Ứng dụng: Điều này hỗ trợ tính sẵn sàng cao (high availability) và khả năng mở rộng (scalability). Bạn có thể dùng lệnh kubectl scale để thay đổi số lượng replicas:
+    ```bash
+    kubectl scale deployment my-app-deployment --replicas=5
+    ```
+  #### **2. Selector:**
+    + ý nghĩa: Xác định cách Deployment tìm và quản lý các Pod mà nó chịu trách nhiệm.
+    + Cấu trúc: 
+    ```bash
+    selector:
+      matchLabels:
+        app: my-app
+    ```
+    + matchLabels: Là một bộ lọc dựa trên nhãn (labels) để xác định Pod nào thuộc về Deployment này. Ở đây, Deployment sẽ quản lý tất cả các Pod có nhãn app: my-app.
+    + Cách hoạt động: 
+      > Deployment sử dụng selector để liên kết với các Pod được tạo ra từ template (xem phần tiếp theo).
+      > Nếu có Pod nào khác trong cluster có nhãn app: my-app nhưng không được tạo bởi Deployment này, chúng sẽ không được quản lý bởi Deployment.
+  #### **3. template:**
+    + Định nghĩa mẫu (blueprint) cho các Pod mà Deployment sẽ tạo ra. Mỗi khi cần tạo Pod mới (do mở rộng hoặc thay thế Pod bị lỗi), Kubernetes sẽ sử dụng mẫu này.
+    + Cấu trúc: 
+    ```bash
+    template:
+      metadata:
+        labels:
+          app: my-app
+      spec:
+        containers:
+        - name: my-container
+          image: my-app:1.0
+          ports:
+          - containerPort: 8080
+    ```
+    + template: chứa hai phần chính: 
+      + metadata: Định nghĩa thông tin mô tả cho Pod (như nhãn)
       + Cấu trúc: 
       ```bash
-      selector:
-        matchLabels:
+      metadata:
+        labels:
           app: my-app
       ```
-        > matchLabels: Là một bộ lọc dựa trên nhãn (labels) để xác định Pod nào thuộc về Deployment này. Ở đây, Deployment sẽ quản lý tất cả các Pod có nhãn app: my-app.
-      + Cách hoạt động: 
-        > Deployment sử dụng selector để liên kết với các Pod được tạo ra từ template (xem phần tiếp theo).
-        > Nếu có Pod nào khác trong cluster có nhãn app: my-app nhưng không được tạo bởi Deployment này, chúng sẽ không được quản lý bởi Deployment.
-    #### **3. template:**
-      + Định nghĩa mẫu (blueprint) cho các Pod mà Deployment sẽ tạo ra. Mỗi khi cần tạo Pod mới (do mở rộng hoặc thay thế Pod bị lỗi), Kubernetes sẽ sử dụng mẫu này.
-      + Cấu trúc: 
-      ```bash
-      template:
-        metadata:
-          labels:
-            app: my-app
-        spec:
-          containers:
-          - name: my-container
-            image: my-app:1.0
-            ports:
-            - containerPort: 8080
-      ```
-      + template: chứa hai phần chính: 
-        + metadata: Định nghĩa thông tin mô tả cho Pod (như nhãn)
-        + spec: Định nghĩa cấu hình chi tiết của Pod (như container, cổng, biến env...)
-        
+      + labels: 
+      + spec: Định nghĩa cấu hình chi tiết của Pod (như container, cổng, biến env...)
+
 ## Các tài nguyên phổ biến
 
 ## Các câu lệnh với kubernetes
