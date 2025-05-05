@@ -106,31 +106,273 @@ spec:
             ports:
             - containerPort: 8080
       ```
-      - **template.metadata**: Định nghĩa thông tin mô tả cho Pod (như nhãn)
-      - Cấu trúc: 
-      ```bash
-      metadata:
-        labels:
-          app: my-app
-      ```
-        - labels: Gán nhãn app: my-app cho Pod. Nhãn này được sử dụng để: 
-          - Liên kết Pod với Deployment (qua selector.matchLabels).
-          - Cho phép các tài nguyên khác (như Service) tìm Pod thông qua nhãn.
-      - **template.spec**: Mô tả cấu hình chi tiết của Pod, bao gồm các container chạy trong Pod, cổng, tài nguyên, và các cấu hình khác.
-      - Cấu trúc: 
-      ```bash
-      spec:
-        containers:
-        - name: my-container
-          image: my-app:1.0
-          ports:
-          - containerPort: 8080
-      ```
-        - containers: Một danh sách các container chạy trong Pod. Mỗi Pod có thể chứa một hoặc nhiều container, nhưng trong trường hợp này chỉ có một container.
-    
-
+        - **template.metadata**: Định nghĩa thông tin mô tả cho Pod (như nhãn)
+        - Cấu trúc: 
+        ```bash
+        metadata:
+          labels:
+            app: my-app
+        ```
+          - labels: Gán nhãn app: my-app cho Pod. Nhãn này được sử dụng để: 
+            - Liên kết Pod với Deployment (qua selector.matchLabels).
+            - Cho phép các tài nguyên khác (như Service) tìm Pod thông qua nhãn.
+        - **template.spec**: Mô tả cấu hình chi tiết của Pod, bao gồm các container chạy trong Pod, cổng, tài nguyên, và các cấu hình khác.
+        - Cấu trúc: 
+        ```bash
+        spec:
+          containers:
+          - name: my-container
+            image: my-app:1.0
+            ports:
+            - containerPort: 8080
+        ```
+          - containers: Một danh sách các container chạy trong Pod. Mỗi Pod có thể chứa một hoặc nhiều container, nhưng trong trường hợp này chỉ có một container.
+          - Chi tiết các trường trong container: 
+            - *name: my-container*:
+              - Đặt tên cho container (phải duy nhất trong Pod).
+              - Tên này được sử dụng để tham chiếu container khi xem log hoặc thực thi lệnh (kubectl logs, kubectl exec).
+            - *image: my-app:1.0:*
+              - Chỉ định image Docker để chạy container.
+              - Ở đây, container sử dụng image my-app với tag 1.0 (có thể được kéo từ Docker Hub hoặc registry khác).
+              - Kubernetes sẽ kéo image này từ registry nếu nó chưa có trên node.
+            - *ports:*
+              - Chỉ định các cổng mà container sẽ lắng nghe.
+              - Trường containerPort: 8080 cho biết container mở cổng 8080.
+              - Lưu ý: Đây chỉ là thông tin mô tả, không tự động ánh xạ cổng ra ngoài. Để truy cập cổng này từ bên ngoài, bạn cần một Service (như ClusterIP, NodePort, hoặc LoadBalancer).
+        - Các trường khác có thể thêm vào: 
+          - env: Định nghĩa biến môi trường
+          ```bash
+          env:
+            - name: DB_HOST
+              value: "mysql-service"
+          ```
+          - resources: Giới hạn tài nguyên CPU và RAM:
+          ```bash
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+          ```
 ## 4. Các tài nguyên phổ biến
+### 4.1 Pod: 
+- Đơn vị nhỏ nhất, chứa một hoặc nhiều container
+- Ví dụ: 
+```bash
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+  labels:
+    app: my-app
+spec:
+  containers:
+  - name: my-container
+    image: nginx:1.14
+    ports:
+    - containerPort: 80
+```
+### 4.2 Deployment
+- Quản lý Pod, đảm bảo số lượng bản sao, hỗ trợ cập nhật và rollback.
+- Ví dụ: 
+```bash
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-app
+        image: my-app:1.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DB_HOST
+          value: "mysql-service"
+```
+### 4.3 Service
+- Cung cấp địa chỉ cố định để truy cập Pod.
+- Các loại: ClusterIP (mặc định), NodePort, LoadBalancer.
+- Ví dụ: 
+```bash
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-service
+spec:
+  selector:
+    app: my-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+  type: ClusterIP
+```
+### 4.4 ConfigMap
+- Lưu trữ cấu hình không nhạy cảm.
+- Ví dụ: 
+```bash
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-config
+data:
+  app.properties: |
+    db.host=mysql-service
+    log.level=debug
+```
+### 4.5 Secret
+- Lưu trữ thông tin nhạy cảm
+- Ví dụ: 
+```bash
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-secret
+type: Opaque
+data:
+  db-password: cGFzc3dvcmQ= # Base64 encoded
+```
+### 4.6 Ingress
+- Quản lý truy cập HTTP/HTTPS từ bên ngoài vào Service.
+- Yêu cầu Ingress Controller (như NGINX, Traefik).
+```bash
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-ingress
+spec:
+  rules:
+  - host: example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: my-app-service
+            port:
+              number: 80
+```
+### Ví dụ cụ thể: 
+- Dưới đây là một bộ manifest YAML cho một ứng dụng web với Deployment, Service và ConfigMap:
+```bash
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app
+  namespace: default
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web-app
+  template:
+    metadata:
+      labels:
+        app: web-app
+    spec:
+      containers:
+      - name: web-container
+        image: web-app:1.0
+        ports:
+        - containerPort: 3000
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: CONFIG_KEY
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: app.key
+---
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-app-service
+  namespace: default
+spec:
+  selector:
+    app: web-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3000
+  type: ClusterIP
+---
+# ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: default
+data:
+  app.key: "value123"
+```
 
 ## 5. Các câu lệnh với kubernetes
-
+- Sử dụng công cụ kubectl để quản lý tài nguyên Kubernetes.
+### 5.1 Áp dụng manifest YAML:
+```bash
+kubectl apply -f <filename>.yaml
+```
+### 5.2 Kiểm tra trạng thái tài nguyên:
+- Xem Pod: 
+```bash
+kubectl get pods
+```
+- Xem Deployment
+```bash
+kubectl get deployments
+```
+- Xem Service
+```bash
+kubectl get services
+```
+### 5.3 Xem chi tiết tài nguyên:
+```bash
+kubectl describe <resource_type> <resource_name>
+# kubectl describe pod my-pod
+```
+### 5.4 Xem log của Pod:
+```bash
+kubectl logs <pod_name> 
+# kubectl logs web-app-pod
+```
+### 5.5 Xóa tài nguyên:
+```bash
+kubectl delete -f <filename>.yaml 
+# or
+kubectl delete <resource_type> <resource_name>
+# kubectl delete deployment web-app
+```
+### 5.6 Mở rộng hoặc thu hẹp Deployment:
+```bash
+kubectl scale deployment <deployment_name> --replicas=<number>
+# kubectl scale deployment web-app --replicas=5
+```
+### 5.7 Cập nhật image trong Deployment:
+```bash
+kubectl set image deployment/<deployment_name> <container_name>=<new_image>
+# kubectl set image deployment/web-app web-container=web-app:2.0
+```
+### 5.8 Truy cập shell trong Pod:
+```bash
+kubectl exec -it <pod_name> -- /bin/bash
+# or use sh
+kubectl exec -it <pod_name> -- /bin/sh
+```
 ## 6. So sánh Docker-compose với Kubernetes
