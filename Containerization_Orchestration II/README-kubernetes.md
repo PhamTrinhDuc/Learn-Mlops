@@ -106,6 +106,7 @@ spec:
             ports:
             - containerPort: 8080
       ```
+      - template có hai thành phần chính:
         - **template.metadata**: Định nghĩa thông tin mô tả cho Pod (như nhãn)
         - Cấu trúc: 
         ```bash
