@@ -1,7 +1,7 @@
-# Định nghĩa:
+### Định nghĩa:
 Kubernetes (thường được gọi là K8s) là một nền tảng mã nguồn mở để tự động hóa việc triển khai, mở rộng và quản lý các ứng dụng được container hóa. Kubernetes giúp quản lý các container trên nhiều máy chủ, đảm bảo tính sẵn sàng cao, khả năng mở rộng và phục hồi tự động.
 
-# Các khái niệm cơ bản:
+### Các khái niệm cơ bản:
 - **Cluster**: Một tập hợp các máy chủ (nodes) chạy Kubernetes, bao gồm:
   - Master Node: Quản lý và điều phối cluster (chạy API server, controller manager, scheduler, etcd)
   - Worker Node: Chạy các container ứng dụng
@@ -12,7 +12,7 @@ Kubernetes (thường được gọi là K8s) là một nền tảng mã nguồn
 - **Namespace**: Phân vùng logic trong cluster để cô lập tài nguyên.
 - **Volume**: Lưu trữ dữ liệu bền vững cho Pod, có thể là cục bộ hoặc từ các nhà cung cấp đám mây.
 
-# Cấu trúc cơ bản của tệp biểu mẫu Kubernetes (YAML)
+### Cấu trúc cơ bản của tệp biểu mẫu Kubernetes (YAML)
 - Tệp YAML được sử dụng để định nghĩa các tài nguyên Kubernetes (Pod, Deployment, Service, v.v.). Cấu trúc chung bao gồm:
 ```bash
 apiVersion: <version>
@@ -26,12 +26,61 @@ spec:
   <resource_specific_config>
 ```
 - Các thành phần chính trong tệp YAML:
-  1. apiVersion: 
+  **1. apiVersion**: 
   - Chỉ định phiên bản API của Kubernetes được sử dụng.
   - Ví dụ: 
     - v1 cho Pod, Service.
     - apps/v1 cho Deployment.
     - networking.k8s.io/v1 cho Ingress.
-  2. kind: 
+  **2. kind**: 
   - Loại tài nguyên (Pod, Deployment, Service, ConfigMap, Secret...)
   - Ví dụ: Deployment, Service, Pod.
+  **3. metadata**
+  - Thông tin mô tả tài nguyên: 
+    - name: tên duy nhất của tài nguyên
+    - namespace: Không gian tên (mặc định là default).
+    - labels: Nhãn để lọc hoặc nhóm tài nguyên.
+    - Ví dụ: 
+    ```bash
+    metadata:
+    name: my-app
+    namespace: production
+    labels:
+      app: my-app
+    ```
+  **4. spec**
+  - Định nghĩa cấu hình cụ thể cho tài nguyên
+  - Tùy thuộc vào kind, spec sẽ có các trường khác nhau
+  - Ví dụ cho Deployment: 
+  ```bash
+  spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-container
+        image: my-app:1.0
+        ports:
+        - containerPort: 8080
+  ```
+  - Giải thích: 
+    - **1. Replicas: 3**
+      - Ý nghĩa: Chỉ định số lượng bản sao (Pod) mà Deployment cần duy trì. Trong trường hợp này, Kubernetes sẽ đảm bảo luôn có 3 Pod đang chạy ứng dụng.
+      - Cách hoạt động: Nếu một Pod bị lỗi hoặc bị xóa, Kubernetes sẽ tự động tạo một Pod mới để duy trì số lượng replicas là 3.
+      - Ứng dụng: Điều này hỗ trợ tính sẵn sàng cao (high availability) và khả năng mở rộng (scalability). Bạn có thể dùng lệnh kubectl scale để thay đổi số lượng replicas:
+      ```bash
+      kubectl scale deployment my-app-deployment --replicas=5
+      ```
+    - **2. Selector:**
+
+### Các tài nguyên phổ biến
+
+### Các câu lệnh với kubernetes
+
+### So sánh Docker-compose với Kubernetes
