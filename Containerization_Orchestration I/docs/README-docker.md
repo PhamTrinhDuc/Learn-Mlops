@@ -139,7 +139,7 @@ CMD mlflow server \
   --backend-store-uri ${BACKEND_STORE_URI} \
   --serve-artifacts \
   --host 0.0.0.0 \
-  --port 5000
+  --port 5000 
 ```
 
 - **Giải thích**:
@@ -149,7 +149,7 @@ CMD mlflow server \
 | `FROM python:3.11-slim` | Chỉ định image cơ sở là Python 3.11 phiên bản nhẹ (slim). | Docker tải image `python:3.11-slim` từ Docker Hub làm nền tảng, các lệnh tiếp theo xây dựng trên image này. |
 | `LABEL maintainer="ducptit"` | Thêm siêu dữ liệu chỉ định người duy trì image là "ducptit". | Lưu nhãn `maintainer` vào siêu dữ liệu image, có thể xem bằng `docker inspect`. |
 | `LABEL organization="Mlops"` | Thêm siêu dữ liệu chỉ định tổ chức là "Mlops". | Lưu nhãn `organization` vào siêu dữ liệu image, hỗ trợ quản lý và tra cứu. |
-| `WORKDIR /mlflow/` | Thiết lập thư mục làm việc mặc định là `/mlflow/`. | Đặt ngữ cảnh cho các lệnh tiếp theo trong thư mục `/mlflow/`, tạo thư mục nếu chưa tồn tại. |
+| `WORKDIR /mlflow/` | Thiết lập thư mục làm việc mặc định là `/mlflow/`. | Tất cả các lệnh tiếp theo (COPY, RUN, CMD, v.v.) sẽ được thực thi trong thư mục `/mlflow/`, tạo thư mục nếu chưa tồn tại. |
 | `ARG MLFLOW_VERSION` | Khai báo biến build-time `MLFLOW_VERSION`. | Lưu biến để sử dụng trong build, giá trị được truyền qua `--build-arg` khi chạy `docker build`. |
 | `RUN apt-get update -y` | Cập nhật danh sách gói phần mềm từ repository. | Chạy lệnh trong container tạm thời, lưu danh sách gói cập nhật vào một lớp mới của image. |
 | `RUN apt-get install -y iputils-ping` | Cài đặt công cụ `ping` để kiểm tra kết nối mạng. | Chạy lệnh cài đặt `iputils-ping`, lưu kết quả vào một lớp mới, công cụ có sẵn khi chạy container. |
@@ -167,13 +167,15 @@ CMD mlflow server \
      - `.`: Đường dẫn đến thư mục chứa Dockerfile (thư mục hiện tại).
    - Ví dụ:
      ```bash
-     docker build -t myapp:1.0 .
+     docker build -t before_msb -f mlflow/Dockerfile --build-arg MLFLOW_VERSION=2.3.2 mlflow
      ```
 
 2. **Kiểm tra Image**:
    - Xem danh sách image:
      ```bash
-     docker images
+     docker images 
+     # or 
+     docker image ls | grep <image_name>
      ```
 
 3. **Chạy Container từ Image**:
@@ -186,8 +188,11 @@ CMD mlflow server \
      - `--name`: Đặt tên container.
    - Ví dụ:
      ```bash
-     docker run -d -p 3000:3000 --name myapp_container myapp:1.0
+     docker run -p 5000:5000 before_msb
      ```
+   - Lưu ý: 
+    - docker build: Thực hiện các lệnh trong Dockerfile (RUN, COPY, ENV, v.v.) Không chạy chương trình chính của bạn (dù nó có ở CMD)
+    - docker run: chạy CMD trong Dockerfile
 
 4. **Kiểm tra Container**:
    - Xem danh sách container đang chạy:
@@ -216,13 +221,25 @@ CMD mlflow server \
      ```bash
      docker rmi <image_name>:<tag>
      ```
+   - Vào trong container: 
+     ```bash
+     docker exec -ti <container_name> bash
+     ```
+   - Check os: 
+      Vào container và chạy: 
+      ```bash
+      cat /etc/os-release 
+      ```
 
 6. **Xem log của Container**:
    - Xem log để debug:
      ```bash
      docker logs <container_name>
      ```
-
+7. **Kiểm tra dung lượng đang dùng**
+  ```bash
+  docker system df
+  ```
 ## Các lệnh tương tác với Docker Image và Container:
 #### 1. Xây dựng image:
 ```bash
@@ -243,18 +260,15 @@ docker ps
 ```bash
 docker logs myapp_container
 ```
-
 #### 5. Dừng và xóa container:
 ```bash
 docker stop myapp_container
 docker rm myapp_container
 ```
-
 #### 6. Xóa image:
 ```bash
 docker rmi myapp:1.0
 ```
-
 #### 7. Đẩy image lên Docker Hub:
 - Đăng nhập:
   ```bash
@@ -268,13 +282,13 @@ docker rmi myapp:1.0
   ```bash
   docker push username/myapp:1.0
   ```
-
 #### 8. Kéo image từ Docker Hub:
 ```bash
 docker pull username/myapp:1.0
 ```
-
 ## Lưu ý khi sử dụng Dockerfile:
+- **Tận dụng cache khi build Image**
+  - Khi build lại Image, Docker sẽ cache từ phần thay đổi trờ lên, vì vậy những command hay thay đổi sẽ đưa xuống cuối của Dockerfile, khi build lại thì phần phía trên sẽ được cache
 - **Tối ưu hóa Image**:
   - Sử dụng image cơ sở nhẹ (như `alpine`).
   - Gộp các lệnh `RUN` để giảm số layer (ví dụ: `RUN apt-get update && apt-get install -y ...`).
