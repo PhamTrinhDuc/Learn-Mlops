@@ -1,0 +1,3 @@
+
+## 1. Định nghĩa
+Infrastructure as Code (IaC) là một phương pháp quản lý và cung cấp cơ sở hạ tầng CNTT thông qua mã lập trình thay vì cấu hình thủ công. Thay vì sử dụng giao diện người dùng hoặc các công cụ quản lý phần cứng trực tiếp, IaC cho phép định nghĩa và quản lý các tài nguyên cơ sở hạ tầng (như máy chủ, mạng, cơ sở dữ liệu) bằng các tệp mã, thường được viết dưới dạng các ngôn ngữ như YAML, JSON hoặc các công cụ chuyên dụng như Terraform, Ansible, CloudFormation.
