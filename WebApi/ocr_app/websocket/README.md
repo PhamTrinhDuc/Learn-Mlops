@@ -1,4 +1,4 @@
-** WEBSOCKET
+### WEBSOCKET
 
 WebSocket là một giao thức giúp giao tiếp 2 chiều (full-duplex) giữa client (trình duyệt) và server theo thời gian thực. Khác với HTTP (phải request mới có response), WebSocket cho phép giữ kết nối liên tục, server có thể gửi dữ liệu bất cứ lúc nào mà không cần client yêu cầu lại.
 
@@ -10,12 +10,3 @@ Tốc độ	        Chậm hơn do mỗi lần gửi lại header	Nhanh hơn, kh
 Dùng cho	      Web bình thường	                    App real-time (chat, game, stock...)
 
 
-** WEBHOOK
-Webhook là cách một hệ thống tự động gửi dữ liệu đến hệ thống khác khi có sự kiện xảy ra – không cần bên nhận phải hỏi liên tục (polling).
-
-
-Thuật ngữ	              Loại gì?	                      Mô tả ngắn gọn
-HTTP/HTTPS	    Giao thức (protocol)	        Giao tiếp client-server qua request/response
-GET, POST	      Phương thức (method)	        Cách client gửi request trong HTTP
-Webhook	        Cơ chế tích hợp (1 chiều)	    Hệ thống gửi HTTP request (thường là POST) khi có event
-WebSocket	      Giao thức riêng (real-time)	  Nâng cấp từ HTTP → giữ kết nối mở, giao tiếp 2 chiều

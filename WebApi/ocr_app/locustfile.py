@@ -25,3 +25,9 @@ class ModelUser(HttpUser):
       # self.client.get(
       #     "/simple",
       # )
+
+# Chạy locust để load test:  
+# 1. Định nghĩa locustfile.py
+# 2. Chạy lệnh sau trong terminal: locust
+# 3. Trong file locustfile.py, định nghĩa class ModelUser kế thừa từ HttpUser
+# 4. Đinh nghĩa method có decorator @task bên trong chỉ định enpoint sử dụng 
