@@ -143,7 +143,7 @@ CMD mlflow server \
 ```
 
 - **Giải thích**:
-  | Tham số | Ý nghĩa | Cách hoạt động |
+| Tham số | Ý nghĩa | Cách hoạt động |
 |---------|---------|----------------|
 | `FROM python:3.11-slim` | Chỉ định image cơ sở là Python 3.11 phiên bản nhẹ (slim). | Docker tải image `python:3.11-slim` từ Docker Hub làm nền tảng, các lệnh tiếp theo xây dựng trên image này. |
 | `LABEL maintainer="ducptit"` | Thêm siêu dữ liệu chỉ định người duy trì image là "ducptit". | Lưu nhãn `maintainer` vào siêu dữ liệu image, có thể xem bằng `docker inspect`. |
