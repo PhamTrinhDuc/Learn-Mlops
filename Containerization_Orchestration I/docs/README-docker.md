@@ -143,6 +143,7 @@ CMD mlflow server \
 ```
 
 - **Giải thích**:
+
 | Tham số | Ý nghĩa | Cách hoạt động |
 |---------|---------|----------------|
 | `FROM python:3.11-slim` | Chỉ định image cơ sở là Python 3.11 phiên bản nhẹ (slim). | Docker tải image `python:3.11-slim` từ Docker Hub làm nền tảng, các lệnh tiếp theo xây dựng trên image này. |
