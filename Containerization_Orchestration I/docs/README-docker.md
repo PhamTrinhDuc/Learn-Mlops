@@ -1,3 +1,5 @@
+<!-- install docker: https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04 -->
+
 # Dockerfile, Docker Image và Container
 
 ## Định nghĩa:
@@ -113,44 +115,46 @@ CMD ["executable", "param1", "param2"]
   USER node
   ```
 
-### Ví dụ cụ thể về Dockerfile:
-Dưới đây là một Dockerfile cho ứng dụng Node.js đơn giản:
+## Ví dụ cụ thể về Dockerfile:
+Dưới đây là một Dockerfile cho ứng dụng mflow đơn giản:
 
 ```Dockerfile
-# Sử dụng image Node.js phiên bản 18, biến thể alpine để nhẹ
-FROM node:18-alpine
+FROM python:3.11-slim
 
-# Thiết lập thư mục làm việc
-WORKDIR /app
+LABEL maintainer="ducptit"
+LABEL organization="Mlops"
 
-# Sao chép package.json và package-lock.json
-COPY package*.json ./
+WORKDIR /mlflow/
 
-# Cài đặt phụ thuộc
-RUN npm install
+ARG MLFLOW_VERSION
 
-# Sao chép toàn bộ mã nguồn
-COPY . .
+RUN apt-get update -y
+RUN apt-get install -y iputils-ping
+RUN pip install --no-cache-dir mlflow==${MLFLOW_VERSION}
 
-# Thiết lập biến môi trường
-ENV PORT=3000
+# documentation purpose only
+EXPOSE 5000
 
-# Mở cổng
-EXPOSE 3000
-
-# Lệnh khởi động ứng dụng
-CMD ["npm", "start"]
+CMD mlflow server \
+  --backend-store-uri ${BACKEND_STORE_URI} \
+  --serve-artifacts \
+  --host 0.0.0.0 \
+  --port 5000
 ```
 
 - **Giải thích**:
-  - `FROM node:18-alpine`: Dùng image Node.js nhẹ.
-  - `WORKDIR /app`: Đặt thư mục làm việc là `/app`.
-  - `COPY package*.json ./`: Sao chép tệp cấu hình npm trước để tối ưu hóa bộ nhớ cache.
-  - `RUN npm install`: Cài đặt phụ thuộc.
-  - `COPY . .`: Sao chép mã nguồn.
-  - `ENV PORT=3000`: Đặt cổng mặc định.
-  - `EXPOSE 3000`: Thông báo container lắng nghe cổng 3000.
-  - `CMD ["npm", "start"]`: Chạy lệnh `npm start` khi container khởi động.
+  | Tham số | Ý nghĩa | Cách hoạt động |
+|---------|---------|----------------|
+| `FROM python:3.11-slim` | Chỉ định image cơ sở là Python 3.11 phiên bản nhẹ (slim). | Docker tải image `python:3.11-slim` từ Docker Hub làm nền tảng, các lệnh tiếp theo xây dựng trên image này. |
+| `LABEL maintainer="ducptit"` | Thêm siêu dữ liệu chỉ định người duy trì image là "ducptit". | Lưu nhãn `maintainer` vào siêu dữ liệu image, có thể xem bằng `docker inspect`. |
+| `LABEL organization="Mlops"` | Thêm siêu dữ liệu chỉ định tổ chức là "Mlops". | Lưu nhãn `organization` vào siêu dữ liệu image, hỗ trợ quản lý và tra cứu. |
+| `WORKDIR /mlflow/` | Thiết lập thư mục làm việc mặc định là `/mlflow/`. | Đặt ngữ cảnh cho các lệnh tiếp theo trong thư mục `/mlflow/`, tạo thư mục nếu chưa tồn tại. |
+| `ARG MLFLOW_VERSION` | Khai báo biến build-time `MLFLOW_VERSION`. | Lưu biến để sử dụng trong build, giá trị được truyền qua `--build-arg` khi chạy `docker build`. |
+| `RUN apt-get update -y` | Cập nhật danh sách gói phần mềm từ repository. | Chạy lệnh trong container tạm thời, lưu danh sách gói cập nhật vào một lớp mới của image. |
+| `RUN apt-get install -y iputils-ping` | Cài đặt công cụ `ping` để kiểm tra kết nối mạng. | Chạy lệnh cài đặt `iputils-ping`, lưu kết quả vào một lớp mới, công cụ có sẵn khi chạy container. |
+| `RUN pip install --no-cache-dir mlflow==${MLFLOW_VERSION}` | Cài đặt thư viện MLflow với phiên bản được chỉ định. | Chạy lệnh cài đặt MLflow, không lưu cache pip, lưu thư viện vào một lớp mới của image. |
+| `EXPOSE 5000` | Thông báo container lắng nghe cổng 5000. | Ghi chú cổng 5000 vào siêu dữ liệu image, không thực sự mở cổng, cần ánh xạ khi chạy container. |
+| `CMD mlflow server ...` | Chỉ định lệnh chạy server MLflow khi container khởi động. | Lưu lệnh khởi động server MLflow với các tham số (`--backend-store-uri`, `--serve-artifacts`, `--host 0.0.0.0`, `--port 5000`) để thực thi khi container chạy. |
 
 ## Quá trình từ Dockerfile đến Container:
 1. **Xây dựng Image**:
