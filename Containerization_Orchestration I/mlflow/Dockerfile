@@ -16,7 +16,7 @@ EXPOSE 5000
 
 CMD mlflow server \ 
 --backend-store-uri ${BACKEND_STORE_URI} \
---sever-artifacts \
+--serve-artifacts \
 --host 0.0.0.0 \
 --port 5000 
 # --port 5000: cổng port mà mlflow sẽ chạy trên container
