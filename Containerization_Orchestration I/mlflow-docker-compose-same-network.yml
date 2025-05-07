@@ -11,7 +11,7 @@ services:
     networks:
       - mlops-platform
     volumes:
-      - mlflow_db_data:/var/lib/postgresql/data
+      - mlflow_db_data:/var/lib/postgresql/data # https://hub.docker.com/_/postgres
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
       interval: 10s

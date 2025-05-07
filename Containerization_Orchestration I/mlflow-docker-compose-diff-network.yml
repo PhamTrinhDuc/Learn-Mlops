@@ -12,6 +12,9 @@ services:
       - mlops-platform
     volumes:
       - mlflow_db_data:/var/lib/postgresql/data
+    extra_hosts:
+      host.docker.internal: host-gateway
+    # The host.docker.internal is a special DNS name that resolves to the internal IP address used by the host.
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
       interval: 10s
@@ -32,6 +35,9 @@ services:
     network_mode: "host"
     volumes:
       - mlflow_data:/mlflow
+    extra_hosts:
+      host.docker.internal: host-gateway
+    # The host.docker.internal is a special DNS name that resolves to the internal IP address used by the host.
     depends_on:
       postgresql:
         condition: service_healthy
@@ -48,6 +54,5 @@ volumes:
 
 networks:
   mlops-platform:
-
 
 # docker compose -f mlflow-docker-compose.yml up -d

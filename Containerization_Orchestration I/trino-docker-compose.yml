@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  trino:
+    image: trinodb/trino:410
+    container_name: trinodb
+    ports:
+      - "8090:8080"
+    networks:
+      - mlops-platform
+    volumes:
+      - trino_data:/etc/trino
+  
+  postgresql:
+    image: postgres:13
+    container_name: postgres
+    ports:
+      - "5432:5432" # host:container
+    env_file: .env
+    networks:
+      - mlops-platform
+    volumes:
+      - mlflow_db_data:/var/lib/postgresql/data # https://hub.docker.com/_/postgres
+
+volumes:
+  trino_data:
+  mlflow_db_data:
+
+networks:
+  mlops-platform:
+
+
+# docker compose -f trino-docker-compose.yml up -d
