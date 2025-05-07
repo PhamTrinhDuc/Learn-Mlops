@@ -179,21 +179,31 @@ volumes:
 ## Các câu lệnh tương tác với file docker-compose.yml
 #### 1. Khởi động container: 
 ```bash
-docker-compose up -d # -d: Chạy ở chế độ nền
+docker compose up -d # -d: Chạy ở chế độ nền
 ```
 #### 2. Kiểm tra trạng thái: 
 ```bash
-docker-compose ps
+docker compose ps
 ```
 #### 3. Xem log: 
 ```bash
-docker-compose logs
+docker compose logs
 ```
 #### 4. Dừng và xóa container: 
 ```bash
-docker-compose down
+docker compose down
 ```
-#### 5. Build lại nếu có thay đổi: 
+#### 5. Chỉ dừng cấc container: 
 ```bash
-docker-compose up --build
+docker compose stop 
 ```
+#### 6. Chạy lại các container: 
+```bash
+docker compose start
+```
+#### 7. Build lại nếu có thay đổi: 
+```bash
+docker compose up --build
+```
+#### Lưu ý: 
+  - Nếu tự định nghĩa file docker-compose.yml bằng tên khác => thêm cờ -f <tên-file-tự-định-nghĩa.yml>. VD: docker compose -f mlflow-docker-compose.yml stop
