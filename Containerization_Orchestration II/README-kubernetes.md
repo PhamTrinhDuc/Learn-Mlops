@@ -1,3 +1,8 @@
+<!-- Cài minikube: https://minikube.sigs.k8s.io/docs/start/?arch=%2Flinux%2Fx86-64%2Fstable%2Fbinary+download
+Cài Kubectl: https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
+Cài kubectx: https://github.com/ahmetb/kubectx?tab=readme-ov-file#manual-installation-macos-and-linux -->
+
+
 ## 1. Định nghĩa:
 Kubernetes (thường được gọi là K8s) là một nền tảng mã nguồn mở để tự động hóa việc triển khai, mở rộng và quản lý các ứng dụng được container hóa. Kubernetes giúp quản lý các container trên nhiều máy chủ, đảm bảo tính sẵn sàng cao, khả năng mở rộng và phục hồi tự động.
 
@@ -326,6 +331,11 @@ data:
 
 ## 5. Các câu lệnh với kubernetes
 - Sử dụng công cụ kubectl để quản lý tài nguyên Kubernetes.
+
+### Run công cụ mô phỏng kubernetes: 
+```bash
+minikube start --cpus=max --memory=max
+```
 ### 5.1 Áp dụng manifest YAML:
 ```bash
 kubectl apply -f <filename>.yaml
