@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  jenkins:
+    image: jenkins
+    container_name: jenkins 
+    restart: unless-stopped # Khởi động lại container nếu nó bị crash, hoặc sau khi reboot máy
+    privileged: true # Cấp cho container quyền hệ thống cao nhất (như root trên host)
+    user: root # Chạy container với user root
+    ports:
+      - 8081:8080
+      - 50000:50000
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+volumes:
+  jenkins_home:
+
+# docker compose -f docker-compose.yaml up -d

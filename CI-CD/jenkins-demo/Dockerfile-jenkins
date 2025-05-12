@@ -1,0 +1,12 @@
+FROM jenkins/jenkins:lts
+
+USER root
+
+RUN apt-get update && \
+    apt-get install -y docker.io && \
+    usermod -aG docker jenkins
+
+USER jenkins
+
+# Note: Jenkins/jenkins:lts image không có sẵn docker cli
+# Cần cài đặt docker cli để sử dụng docker trong Jenkins. Sau đó dùng images này để build container cho Jenkins
