@@ -189,19 +189,25 @@ docker compose ps
 ```bash
 docker compose logs
 ```
-#### 4. Dừng và xóa container: 
+#### 4. Xóa container: 
+```bash
+docker rm <container_name>
+# or
+docker rm -v <container_name> # xóa container và volume
+```
+#### 5. Dừng và xóa container: 
 ```bash
 docker compose down
 ```
-#### 5. Chỉ dừng cấc container: 
+#### 6. Chỉ dừng các container: 
 ```bash
 docker compose stop 
 ```
-#### 6. Chạy lại các container: 
+#### 7. Chạy lại các container: 
 ```bash
 docker compose start
 ```
-#### 7. Build lại nếu có thay đổi: 
+#### 8. Build lại nếu có thay đổi: 
 ```bash
 docker compose up --build
 ```
