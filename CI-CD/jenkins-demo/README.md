@@ -40,3 +40,11 @@ python-demo/
 | Không ai kiểm tra chất lượng  | Có test, fail thì rollback   |
 | Mất thời gian deploy          | Deploy chỉ vài giây          |
 | Không đồng bộ giữa dev        | Tất cả cùng theo 1 quy trình |
+
+### Làm sao để pytest biết đâu là test ?
+> File phải có tên bắt đầu với test_ hoặc kết thúc bằng _test.py.
+> Hàm phải có tên bắt đầu bằng test_ .
+
+### Note: 
+> Jenkins/jenkins:lts image không có sẵn docker cli
+> Cần cài đặt docker cli để sử dụng docker trong Jenkins. Sau đó dùng images này để build container cho Jenkins
