@@ -64,5 +64,5 @@ kubectl get svc -o wide
 ### Điều chỉnh NodePort => LoadBalancer: 
 ```bash
 kubectl edit svc hpp 
-# Tìm NodePort => Sửa thành LoadBalancer
+# Tìm type: NodePort => Sửa thành type: LoadBalancer
 ```
