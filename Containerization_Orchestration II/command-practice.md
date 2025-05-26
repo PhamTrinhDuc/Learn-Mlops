@@ -57,3 +57,12 @@ kubectl get replicasets # or kbectl get rs
 # Lưu ý: + Deployment tạo replicas sau đó replicas mới tạo pod
 #        + Tương tự khi với pod, khi xóa replicas thì replicas sẽ tự được tạo lại bởi Deployment. Bởi cả 2 đều được quản lý bởi Deployment
 ```
+### Muốn biết rõ IP nào đang dùng cho service nào, dùng
+```bash
+kubectl get svc -o wide
+```
+### Điều chỉnh NodePort => LoadBalancer: 
+```bash
+kubectl edit svc hpp 
+# Tìm NodePort => Sửa thành LoadBalancer
+```
