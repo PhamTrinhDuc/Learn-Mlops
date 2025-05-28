@@ -1,0 +1,17 @@
+version: '3'
+services:
+  rancher-server:
+    image: rancher/rancher:v2.9.2
+    container_name: rancher-server
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /data/rancher/data:/var/lib/rancher
+    privileged: true
+
+
+# docker logs container-id 2>&1 | grep "Bootstrap Password:"
+# 2H0EWLzCxaeSdb4C
+

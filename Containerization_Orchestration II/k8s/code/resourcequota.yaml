@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata: 
+  name: mem-cpu-quota
+  namespace: k8s
+spec: 
+  hard: 
+    requests.cpu: "2" # tổng số CPU (core) mà tất cả Pod trong namespace được phép request 
+    requests.memory: 4Gi
+
+
+# kubectl apply -f resourcequota.yaml 
+# kubectl get resourcequota -n k8s
