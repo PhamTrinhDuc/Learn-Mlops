@@ -14,4 +14,9 @@ services:
 
 # docker logs container-id 2>&1 | grep "Bootstrap Password:"
 # 2H0EWLzCxaeSdb4C
+# curl --insecure -sfL https://localhost/v3/import/tt8ljdktwmqxjxgnj4v4kh9mxztb9v5x9wctwjvfbhmc84926mfjv8_c-m-zrv4z8k6.yaml | kubectl apply -f -
 
+# docker run -d --restart=unless-stopped \
+#   -p 80:80 -p 443:443 \
+#   -e CATTLE_SERVER_URL=https://rancher.mlops.vn \
+#   rancher/rancher:v2.9.2

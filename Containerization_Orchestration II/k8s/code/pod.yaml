@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: car-serv
+  namespace: car-serv
+spec:
+  containers:
+  - name: car-serv
+    image: elroydevops/car-serv
+    ports:
+    - containerPort: 80
+
+# kubectl apply -f pod.yaml
+# kubectl get pods -n car-service
+# kubectl exec -it car-service -n car-service -- /bin/bash
