@@ -2,24 +2,24 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    workload.user.cattle.io/workloadselector: apps.deployment-car-serv-car-serv-deployment
+    app: car-serv
   name: car-serv-deployment
   namespace: car-serv
 spec:
   replicas: 2
-  strategy:
-    rollingUpdate:
-      maxSurge: 1 #25%
-      maxUnavailable: 1 #25%
-    type: RollingUpdate
   revisionHistoryLimit: 11
   selector:
     matchLabels:
-      workload.user.cattle.io/workloadselector: apps.deployment-car-serv-car-serv-deployment
+      app: car-serv
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
   template:
     metadata:
       labels:
-        workload.user.cattle.io/workloadselector: apps.deployment-car-serv-car-serv-deployment
+        app: car-serv
       namespace: car-serv
     spec:
       containers:
