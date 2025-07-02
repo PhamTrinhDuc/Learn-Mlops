@@ -1,0 +1,2 @@
+google-auth==2.39.0                   
+googleapis-common-protos==1.70.0 

@@ -76,3 +76,18 @@ gcloud auth activate-service-account --key-file=/path/to/key.json
   - 2.2: Targets: Choose ```All instances in the network```
   - 2.3: Source filters: 0.0.0.0/0
   - 2.4: Protocols and ports > TCP: 32434
+
+
+### IV. Cài docker trên VM của GCP 
+- ssh vào VM 
+- Cài docker: 
+```bash
+curl -fsSL https://get.docker.com -o get-docker.sh
+sh get-docker.sh
+```
+- Chạy các command sau để cho phép chạy docker mà không cần `sudo`: 
+```bash
+sudo groupadd docker # Tạo một nhóm Linux có tên docker
+sudo usermod -aG docker $USER # Thêm user hiện tại ($USER) vào nhóm docker
+newgrp docker # Tải lại nhóm cho phiên đăng nhập hiện tại
+```
