@@ -1,0 +1,5 @@
+[servers_1]
+34.84.121.133 ansible_ssh_private_key_file=/home/quandv/.ssh/id_rsa
+
+[servers_2]
+35.200.115.190 ansible_ssh_private_key_file=/home/quandv/.ssh/id_rsa
