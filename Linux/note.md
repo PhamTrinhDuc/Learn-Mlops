@@ -20,3 +20,8 @@ sudo chmod 777 /path/to/folder
 ```bash
 sudo chown your_user_name ./6-storage-persistent
 ```
+#### 6. Tắt port đang chạy: 
+```bash
+sudo lsof -i :8000
+sudo kill -9 PID
+```
