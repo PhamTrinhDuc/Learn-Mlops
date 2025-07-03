@@ -21,3 +21,6 @@
         - network:
             selfLink: global/networks/default
       state: present # change to absent to delete the instance
+
+
+# ansible-playbook simple_playbook.yml

@@ -54,3 +54,5 @@
         ports:
           - "30000:30000"
         detach: yes  # Run the container in the background
+
+# ansible-playbook install_and_run_docker.yml -i ../inventory
